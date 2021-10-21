@@ -862,7 +862,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                 SubmissionDate = entrustCertDetail.IssueDateTime,
                 CSR = !string.IsNullOrEmpty(entrustCertDetail.Csr) ? ConfigurationUtils.OnlyBase64CertContent(entrustCertDetail.Csr) : null,
                 Requester = entrustCertDetail.Tracking.RequesterName,
-                RevocationDate = entrustCertDetail.Tracking.Deactivated ? entrustCertDetail.Tracking.DeactivatedOn ?? DateTime.UtcNow : (DateTime?)null
+                RevocationDate = entrustCertDetail.Tracking.Deactivated ? entrustCertDetail.Tracking.DeactivatedOn ?? DateTime.UtcNow : (DateTime?)null,
+                ProductID = entrustCertDetail.CertType
             };
             return newCert;
         }
@@ -885,7 +886,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                 SubmissionDate = entrustCertDetail.IssueDateTime,
                 CSR = !string.IsNullOrEmpty(entrustCertDetail.Csr) ? ConfigurationUtils.OnlyBase64CertContent(entrustCertDetail.Csr) : null,
                 Requester = entrustCertDetail.Tracking.RequesterName,
-                RevocationDate = entrustCertDetail.Tracking.Deactivated ? entrustCertDetail.Tracking.DeactivatedOn ?? DateTime.UtcNow : (DateTime?)null
+                RevocationDate = entrustCertDetail.Tracking.Deactivated ? entrustCertDetail.Tracking.DeactivatedOn ?? DateTime.UtcNow : (DateTime?)null,
+                ProductID = entrustCertDetail.CertType
             };
             return newCert;
         }
