@@ -37,7 +37,7 @@ In order to enroll for certificates the Keyfactor Command server must trust the 
 * Update the CAProxyServer.config file
   * Update the CAConnection section to point at the EntrustCAProxy class
   ```xml
-  <alias alias="CAConnector" type="Keyfactor.Extensions.AnyGateway.Entrust.EntrustCAConnector, EntrustCAProxy"/>
+  <alias alias="CAConnector" type="Keyfactor.Extensions.AnyGateway.Entrust.EntrustCAProxy, EntrustCAProxy"/>
   ```
 
 # Configuration
