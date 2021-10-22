@@ -7,6 +7,7 @@
 
 using Keyfactor.Extensions.AnyGateway.Entrust.APIProxy;
 using Keyfactor.Logging;
+
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
