@@ -69,8 +69,8 @@
       <HintPath>..\..\packages\CERTENROLLLibx64.1.0.0.2\lib\net35\Interop.CERTENROLLLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Keyfactor.Logging, Version=1.1.1.0, Culture=neutral, PublicKeyToken=0ed89d330114ab09, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Keyfactor.Logging.1.1.1\lib\netstandard2.0\Keyfactor.Logging.dll</HintPath>
+    <Reference Include="Keyfactor.Logging, Version=1.1.0.0, Culture=neutral, PublicKeyToken=0ed89d330114ab09, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Keyfactor.Logging.1.1.0\lib\netstandard2.0\Keyfactor.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
