@@ -3,8 +3,8 @@
 name: Keyfactor Extension - Release
 
 env:
-  SOLUTION_FOLDER: '<SOLUTION_FOLDER_NAME>'
-  PROJECT_FOLDER: '<PROJECT_FOLDER_NAME>'
+  SOLUTION_FOLDER: '.'
+  PROJECT_FOLDER: 'src\EntrustRestCAProxy'
 
 # Controls when the action will run. 
 on:
