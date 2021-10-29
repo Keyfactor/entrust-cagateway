@@ -534,10 +534,11 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                     }
 
                     // If the cert exists, check the status and see if it's different from the cert from Entrust
+                    // If doing a full sync, update the record anyway (in case other fields have changed)
                     if (dbCert != null)
                     {
                         int dbStatus = dbCert.Status;
-                        if (dbStatus != entrustStatus)
+                        if (dbStatus != entrustStatus || certificateAuthoritySyncInfo.DoFullSync)
                         {
                             CAConnectorCertificate newCert = entrustCert.TrackingId != 0 ? GetSingleRecord(client, entrustCert.TrackingId) : GetSingleRecord(client, GetThumbprint(entrustCert));
                             blockingBuffer.Add(newCert);
