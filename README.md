@@ -8,8 +8,13 @@ This integration allows for the Synchronization, Enrollment, and Revocation of c
 This AnyGateway plug-in enables issuance, revocation, and synchronization of certificates from Entrust's Managed SSL/TLS offering.  
 # Prerequisites
 
+## AnyGateway Platform Minimum Version
+The Entrust AnyGateway requires the Keyfactor AnyGateway v21.5.1 or newer
+
+## Migrating to the Entrust AnyGateway plugin from a previous version of the standalone Entrust Gateway.
+
 ## Migration From 20.1.x or Earlier
-If you are upgrading from an older version of the Entrust gateway that still used the GUI configuration wizard (20.1.x or earlier), you first have to do an upgrade to a 21.x version to migrate your database to SQL.
+If you are upgrading from an older version of the Entrust gateway that still used the GUI configuration wizard (20.1.x or earlier), you first have to do an upgrade to EntrustCAProxy version 21.x to migrate your database to SQL.
 After doing that upgrade, follow the below steps to migrate from 21.x to the current version.
 
 ## Migration from 21.9 or Earlier
