@@ -339,13 +339,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                         EndUserKeyStorageAgreement = true,
                     };
 
-                    (bool validRenewResponse, string messageRenewResponse) = client.ValidateRenewCertificate(renewRequest, GetTrackingId(client, productInfo));
-                    if (!validRenewResponse)
-                    {
-                        Logger.Error($"Request validation failed. {messageRenewResponse}");
-                        throw new Exception($"Request validation failed. {messageRenewResponse}");
-                    }
-
+                    //Validation is not supported for Renewals so validateOnly flag does not apply
                     response = client.RenewCertificate(renewRequest, trackingId);
                     break;
                 default:
