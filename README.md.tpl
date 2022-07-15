@@ -84,7 +84,7 @@ The CertificateUsage parameter is REQUIRED for public SSL certificate types, and
  
  
 ## Security
-The security section does not change specifically for the GlobalSign CA Gateway.  Refer to the AnyGateway Documentation for more detail.
+The security section does not change specifically for the Entrust Gateway.  Refer to the AnyGateway Documentation for more detail.
 ```json
   /*Grant permissions on the CA to users or groups in the local domain.
 	READ: Enumerate and read contents of certificates.
