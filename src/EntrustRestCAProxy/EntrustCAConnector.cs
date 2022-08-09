@@ -24,7 +24,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-
+using Newtonsoft.Json;
 using static CAProxy.Common.RequestUtilities;
 using static CSS.PKI.PKIConstants.Microsoft;
 
@@ -85,7 +85,9 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
         {
             Dictionary<string, object> connectionInfo = ConfigProvider.CAConnectionData;
             EntrustClient client = CreateEntrustClient(connectionInfo);
+            Logger.Trace("Entrust Client Created");
             X509Name subjectParsed = new X509Name(subject);
+            Logger.Trace($"Parsed Subject with {subject}");
 
             string underscoreErrorMessage = "Underscore is not allowed in DNSName.";
             string requestEmail;
@@ -100,8 +102,9 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
             // Check tracking ID if we're doing a renewal or reissuance.
             if (enrollmentType == EnrollmentType.Reissue || enrollmentType == EnrollmentType.Renew)
             {
+                Logger.Trace("This is a renew or reissue");
                 trackingId = GetTrackingId(client, productInfo);
-
+                Logger.Trace($"With trackingId {trackingId}");
                 // Check now if the trackingId is 0 to fail early.
                 if (trackingId == 0)
                 {
@@ -122,6 +125,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                     commonName = cn;
                 }
 
+                Logger.Trace($"Common Name of {commonName}");
+
                 checkingSanVariable = "Organization";
                 string org = subjectParsed.GetValueList(X509Name.O).Cast<string>().LastOrDefault();
                 if (productInfo.ProductParameters.ContainsKey(EntrustConstants.ORGANIZATION) && !string.IsNullOrEmpty(productInfo.ProductParameters[EntrustConstants.ORGANIZATION]))
@@ -132,6 +137,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                 {
                     organization = org;
                 }
+
+                Logger.Trace($"Organization of {organization}");
 
                 checkingSanVariable = "Email";
                 string subjectEmail = subjectParsed.GetValueList(X509Name.EmailAddress).Cast<string>().LastOrDefault();
@@ -152,6 +159,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                     requestEmail = "email@email.invalid";
                 }
 
+                Logger.Trace($"Email of {requestEmail}");
+
                 checkingSanVariable = "Telephone Number";
                 if (productInfo.ProductParameters.ContainsKey(EntrustConstants.ENROLL_NUMBER) && !string.IsNullOrEmpty(productInfo.ProductParameters[EntrustConstants.ENROLL_NUMBER]))
                 {
@@ -166,6 +175,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                     requestNumber = "0000000000";
                 }
 
+                Logger.Trace($"Telephone Number of {requestNumber}");
+
                 checkingSanVariable = "Name";
                 if (productInfo.ProductParameters.ContainsKey(EntrustConstants.NAME) && !string.IsNullOrEmpty(productInfo.ProductParameters[EntrustConstants.NAME]))
                 {
@@ -179,6 +190,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                 {
                     requestName = "TestUser";
                 }
+
+                Logger.Trace($"Name of {requestName}");
             }
             catch (Exception ex)
             {
@@ -207,6 +220,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                 throw new Exception($"Domain cannot be determined from Common Name.");
             }
 
+            Logger.Trace($"First DNS of {dnsNames[0]}");
+
             IEnumerable<Organization> approvedOrgs = client.GetOrganizations().Where(x => x.VerificationStatus.Equals("APPROVED", StringComparison.OrdinalIgnoreCase));
             if (string.IsNullOrEmpty(organization)) // If the organization is empty, use the default client.
             {
@@ -221,12 +236,15 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                 }
             }
 
+            Logger.Trace($"ClientId of {clientId}");
+
             if (clientId == -1)
             {
                 throw new Exception($"Organization {organization} is not a valid Entrust organization for this account. The following organizations are approved: {string.Join(", ", approvedOrgs.Select(x => x.Name))}.");
             }
 
             string usageType = (productInfo.ProductParameters.ContainsKey("CertificateUsage")) ? productInfo.ProductParameters["CertificateUsage"] : "";
+            Logger.Trace($"usageType of {usageType}");
             string eku = "";
             if (usageType.Equals("SERVERCLIENT", StringComparison.OrdinalIgnoreCase))
             {
@@ -244,6 +262,8 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 			{
                 eku = "";
 			}
+
+            Logger.Trace($"Getting Tracking Info");
             Tracking trackingInfo = new Tracking()
             {
                 TrackingInfo = "",
@@ -252,6 +272,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                 RequesterPhone = requestNumber,
                 Deactivated = false
             };
+            Logger.Trace($"Got Tracking Info");
 
             if (!EntrustCertType.InventoryExists(client, productInfo.ProductID))
             {
@@ -260,12 +281,33 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
             }
 
             var months = (productInfo.ProductParameters.ContainsKey("Lifetime")) ? int.Parse(productInfo.ProductParameters["Lifetime"]) : 12;
-            
 
+            Logger.Trace($"Months of {months}");
+            Logger.Trace($"Switch Statement for Enrollment Type of {enrollmentType}");
             CertificateResponse response;
             switch (enrollmentType)
             {
                 case EnrollmentType.New:
+
+                    Logger.Trace($"Csr is {csr}");
+                    Logger.Trace($"ClientId is {clientId}");
+                    Logger.Trace($"Org is {organization}");
+                    Logger.Trace($"CertType is {productInfo.ProductID.ToUpper()}");
+                    Logger.Trace($"CertExpiryDate is {DateTime.Now.AddMonths(months)}");
+                    Logger.Trace($"CertLifetime is {"P" + Math.Round(months / 12.0).ToString() + "Y"}");
+                    Logger.Trace($"Tracking is {trackingInfo}");
+                    Logger.Trace($"QueueForApproval is false");
+                    Logger.Trace($"CertEmail is {requestEmail}");
+                    Logger.Trace($"SubjectAltName is {dnsNames[0]}");
+                    Logger.Trace($"Password is ''");
+                    Logger.Trace($"SigningAlg is SHA-2");
+                    Logger.Trace($"Eku is {eku}");
+                    Logger.Trace($"Cn is {commonName}");
+                    Logger.Trace($"Upn is {requestEmail}");
+                    Logger.Trace($"Ou is empty string list");
+                    Logger.Trace($"EndUserKeyStorageAgreement is true");
+                    Logger.Trace($"ValidateOnly is false");
+
                     NewCertificateRequest request = new NewCertificateRequest()
                     {
                         Csr = csr,
@@ -289,15 +331,35 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                         //When true, this causes the api to only validate the submitted info and not actually register a cert.
                         ValidateOnly = false
                     };
+                    Logger.Trace($"Before Validation Request: {JsonConvert.SerializeObject(request)}");
                     (bool validResponse, string messageResponse) = client.ValidateRequestNewCertificate(request);
+                    Logger.Trace($"ValidResponse?: {validResponse}");
+                    Logger.Trace($"messageResponse: {messageResponse}");
+
                     if (!validResponse) {
                         Logger.Error($"Request validation failed. {messageResponse}");
                         throw new Exception($"Request validation failed. {messageResponse}");
                     }
 
                     response = client.RequestNewCertificate(request);
+                    Logger.Trace($"New Cert Request Response: {JsonConvert.SerializeObject(response)}");
                     break;
                 case EnrollmentType.Reissue:
+
+                    Logger.Trace($"Csr is {csr}");
+                    Logger.Trace($"ClientId is {clientId}");
+                    Logger.Trace($"Org is {organization}");
+                    Logger.Trace($"Tracking is {trackingInfo}");
+                    Logger.Trace($"CertEmail is {requestEmail}");
+                    Logger.Trace($"SubjectAltName is {dnsNames[0]}");
+                    Logger.Trace($"Password is ''");
+                    Logger.Trace($"SigningAlg is SHA-2");
+                    Logger.Trace($"Eku is {eku}");
+                    Logger.Trace($"Cn is {commonName}");
+                    Logger.Trace($"Upn is {requestEmail}");
+                    Logger.Trace($"Ou is empty string list");
+                    Logger.Trace($"EndUserKeyStorageAgreement is true");
+
                     ReissueCertificateRequestBody reissueRequest = new ReissueCertificateRequestBody()
                     {
                         Csr = csr,
@@ -315,10 +377,28 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                         Ou = new List<string>(),
                         EndUserKeyStorageAgreement = true,
                     };
-
+                    Logger.Trace($"reissueRequest:  {JsonConvert.SerializeObject(reissueRequest)}");
                     response = client.ReissueCertificate(reissueRequest, trackingId);
+                    Logger.Trace($"reissueResponse:  {JsonConvert.SerializeObject(response)}");
                     break;
                 case EnrollmentType.Renew:
+
+                    Logger.Trace($"Csr is {csr}");
+                    Logger.Trace($"ClientId is {clientId}");
+                    Logger.Trace($"Org is {organization}");
+                    Logger.Trace($"CertExpiryDate is {DateTime.Now.AddMonths(months)}");
+                    Logger.Trace($"CertLifetime is {"P" + Math.Round(months / 12.0).ToString() + "Y"}");
+                    Logger.Trace($"Tracking is {trackingInfo}");
+                    Logger.Trace($"CertEmail is {requestEmail}");
+                    Logger.Trace($"SubjectAltName is {dnsNames[0]}");
+                    Logger.Trace($"Password is ''");
+                    Logger.Trace($"SigningAlg is SHA-2");
+                    Logger.Trace($"Eku is {eku}");
+                    Logger.Trace($"Cn is {commonName}");
+                    Logger.Trace($"Upn is {requestEmail}");
+                    Logger.Trace($"Ou is empty string list");
+                    Logger.Trace($"EndUserKeyStorageAgreement is true");
+
                     RenewCertificateRequestBody renewRequest = new RenewCertificateRequestBody()
                     {
                         Csr = csr,
@@ -338,21 +418,17 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                         Ou = new List<string>(),
                         EndUserKeyStorageAgreement = true,
                     };
-
-                    (bool validRenewResponse, string messageRenewResponse) = client.ValidateRenewCertificate(renewRequest, GetTrackingId(client, productInfo));
-                    if (!validRenewResponse)
-                    {
-                        Logger.Error($"Request validation failed. {messageRenewResponse}");
-                        throw new Exception($"Request validation failed. {messageRenewResponse}");
-                    }
-
+                    Logger.Trace($"reissueRequest:  {JsonConvert.SerializeObject(renewRequest)}");
+                    //Validation is not supported for Renewals so validateOnly flag does not apply
                     response = client.RenewCertificate(renewRequest, trackingId);
+                    Logger.Trace($"renewResponse:  {JsonConvert.SerializeObject(response)}");
                     break;
                 default:
                     throw new Exception($"The enrollment type {enrollmentType} is not recognized.");
             }
-
+            Logger.Trace($"Getting Cert By Tracking Id {response.TrackingId}");
             CertificateExt enrolledCert = client.GetCertificateByTrackingId(response.TrackingId);
+            Logger.Trace($"Got Cert By Tracking Id {response.TrackingId} with status of {enrolledCert.Status}");
             int status = ConvertStatus(enrolledCert.Status);
             string statusMessage;
             switch (status)
@@ -374,6 +450,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
                     break;
             }
 
+            Logger.Trace($"Returning Result of CARequestId={response.TrackingId}, Certificate={ConfigurationUtils.OnlyBase64CertContent(response.EndEntityCert)}, Status={status}, StatusMessage={statusMessage}");
             return new EnrollmentResult
             {
                 CARequestID = response.TrackingId.ToString(),
