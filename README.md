@@ -30,13 +30,14 @@ After doing that upgrade, follow the below steps to migrate from 21.x to the cur
 
 ## Migration from 21.9 or Earlier
 
+* IMPORTANT CONFIG CHANGE: 21.9 and earlier pulled certificate EKU information from the templates. That information is now provided in the config file. See the below section on Templates, and make sure to add the CertificateUsage parameter to any public SSL types in your config.
+
 * Before doing any upgrade, run the following PowerShell command:
     reg export "HKLM\Software\Keyfactor\Keyfactor CA Gateway" C:\EntrustGatewayBackup.reg
 * After backing up the registry key, completely uninstall the old version of the Entrust CA Gateway
 * Follow the instructions to install the AnyGateway product and update the CAProxyServer.config file, but do not do any further configuration yet
 * Run the following PowerShell command:
     reg import C:\EntrustGatewayBackup.reg
-* IMPORTANT: 21.9 and earlier pulled certificate EKU information from the templates. That information is now provided in the config file. See the below section on Templates, and make sure to add the CertificateUsage parameter to any public SSL types in your config.
 * Continue with the gateway configuration, but do NOT run the Set-KeyfactorGatewayEncryptionCert or the Set-KeyfactorGatewayDatabaseConnection cmdlets, as those values were the ones persisted in the registry backup.
 
 This is a one-time process as the Entrust gateway moves fully to the Keyfactor AnyGateway model. Future upgrades will not require this process.
