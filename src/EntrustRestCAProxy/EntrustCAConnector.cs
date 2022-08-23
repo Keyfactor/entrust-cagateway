@@ -487,6 +487,10 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 			// Get the cert by tracking ID or thumbprint.
 			CertificateExt entrustCert = parts.Length == 1 ? client.GetCertificateByTrackingId(Int32.Parse(caRequestId)) : client.GetCertificateByThumbprint(parts[1]);
 			int status = ConvertStatus(entrustCert.Status);
+			if (status == (int)RequestDisposition.PENDING)
+			{
+				status = (int)RequestDisposition.EXTERNAL_VALIDATION;
+			}
 			return new CAConnectorCertificate
 			{
 				CARequestID = caRequestId,
@@ -945,11 +949,16 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 		{
 			CertificateExt entrustCertDetail = client.GetCertificateByTrackingId(trackingId);
 			string noHeaders = !string.IsNullOrEmpty(entrustCertDetail.EndEntityCert) ? ConfigurationUtils.OnlyBase64CertContent(entrustCertDetail.EndEntityCert) : null;
+			int statusCode = ConvertStatus(entrustCertDetail.Status);
+			if (statusCode == (int)RequestDisposition.PENDING)
+			{
+				statusCode = (int)RequestDisposition.EXTERNAL_VALIDATION;
+			}
 			CAConnectorCertificate newCert = new CAConnectorCertificate
 			{
 				CARequestID = trackingId.ToString(),
 				Certificate = noHeaders,
-				Status = ConvertStatus(entrustCertDetail.Status),
+				Status = statusCode,
 				SubmissionDate = entrustCertDetail.IssueDateTime,
 				CSR = !string.IsNullOrEmpty(entrustCertDetail.Csr) ? ConfigurationUtils.OnlyBase64CertContent(entrustCertDetail.Csr) : null,
 				Requester = entrustCertDetail.Tracking.RequesterName,
@@ -969,11 +978,16 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 		{
 			CertificateExt entrustCertDetail = client.GetCertificateByThumbprint(thumbprint);
 			string noHeaders = !string.IsNullOrEmpty(entrustCertDetail.EndEntityCert) ? ConfigurationUtils.OnlyBase64CertContent(entrustCertDetail.EndEntityCert) : null;
+			int statusCode = entrustCertDetail.Status.Equals("UNKNOWN", StringComparison.OrdinalIgnoreCase) ? (int)RequestDisposition.FOREIGN_CERT : ConvertStatus(entrustCertDetail.Status);
+			if (statusCode == (int)RequestDisposition.PENDING)
+			{
+				statusCode = (int)RequestDisposition.EXTERNAL_VALIDATION;
+			}
 			CAConnectorCertificate newCert = new CAConnectorCertificate
 			{
 				CARequestID = $"0-{thumbprint}",
 				Certificate = noHeaders,
-				Status = entrustCertDetail.Status.Equals("UNKNOWN", StringComparison.OrdinalIgnoreCase) ? (int)RequestDisposition.FOREIGN_CERT : ConvertStatus(entrustCertDetail.Status),
+				Status = statusCode,
 				SubmissionDate = entrustCertDetail.IssueDateTime,
 				CSR = !string.IsNullOrEmpty(entrustCertDetail.Csr) ? ConfigurationUtils.OnlyBase64CertContent(entrustCertDetail.Csr) : null,
 				Requester = entrustCertDetail.Tracking.RequesterName,
