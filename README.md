@@ -8,12 +8,9 @@ This integration allows for the Synchronization, Enrollment, and Revocation of c
 
 This repository contains an AnyGateway CA Connector, which is a plugin to the Keyfactor AnyGateway. AnyGateway CA Connectors allow Keyfactor Command to be used for inventory, issuance, and revocation of certificates from a third-party certificate authority.
 
----
 
 
 
-
----
 
 # Introduction
 This AnyGateway plug-in enables issuance, revocation, and synchronization of certificates from Entrust's Managed SSL/TLS offering.  
@@ -171,6 +168,8 @@ The default requester name.
 The default requester email address.
 * ```PhoneNumber```
 The default requester phone number
+* ```IgnoreExpired```
+(OPTIONAL) If set to true, will not sync expired certs from the Entrust account.
 
 ```json
   "CAConnection": {
@@ -183,7 +182,8 @@ The default requester phone number
     },
     "Name": "TestUser",
     "Email": "email@email.invalid",
-    "PhoneNumber": "0000000000"
+    "PhoneNumber": "0000000000",
+	"IgnoreExpired": "false"
   },
 ```
 ## GatewayRegistration
