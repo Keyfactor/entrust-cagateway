@@ -7,26 +7,27 @@
 
 namespace Keyfactor.Extensions.AnyGateway.Entrust
 {
-    public class Constants
-    {
-        public const string USERNAME = "AuthUsername";
-        public const string PASSWORD = "AuthPassword";
-        public const string CLIENT_CERTIFICATE = "ClientCertificate";
-        public const string STORE_NAME = "StoreName";
-        public const string STORE_LOCATION = "StoreLocation";
-        public const string THUMBPRINT = "Thumbprint";
+	public class Constants
+	{
+		public const string USERNAME = "AuthUsername";
+		public const string PASSWORD = "AuthPassword";
+		public const string CLIENT_CERTIFICATE = "ClientCertificate";
+		public const string STORE_NAME = "StoreName";
+		public const string STORE_LOCATION = "StoreLocation";
+		public const string THUMBPRINT = "Thumbprint";
+		public const string IGNORE_EXPIRED = "IgnoreExpired";
 
-        public const string CLIENT = "EntrustClient";
-        public const string DOMAINS = "EntrustDomains";
-        public const string ENROLL_NUMBER = "Phone Number";
-        public const string CONFIG_NUMBER = "PhoneNumber";
-        public const string NAME = "Name";
-        public const string EMAIL = "Email";
-        public const string ORGANIZATION = "Organization";
+		public const string CLIENT = "EntrustClient";
+		public const string DOMAINS = "EntrustDomains";
+		public const string ENROLL_NUMBER = "Phone Number";
+		public const string CONFIG_NUMBER = "PhoneNumber";
+		public const string NAME = "Name";
+		public const string EMAIL = "Email";
+		public const string ORGANIZATION = "Organization";
 
-        public const string SERVER_AUTH = "1.3.6.1.5.5.7.3.1";
-        public const string CLIENT_AUTH = "1.3.6.1.5.5.7.3.2";
+		public const string SERVER_AUTH = "1.3.6.1.5.5.7.3.1";
+		public const string CLIENT_AUTH = "1.3.6.1.5.5.7.3.2";
 
-        public const string REQUEST_TIMEOUT_SECONDS = "RequestTimeoutSeconds";
-    }
+		public const string REQUEST_TIMEOUT_SECONDS = "RequestTimeoutSeconds";
+	}
 }

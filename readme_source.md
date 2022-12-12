@@ -154,6 +154,8 @@ The default requester name.
 The default requester email address.
 * ```PhoneNumber```
 The default requester phone number
+* ```IgnoreExpired```
+(OPTIONAL) If set to true, will not sync expired certs from the Entrust account.
 
 ```json
   "CAConnection": {
@@ -166,7 +168,8 @@ The default requester phone number
     },
     "Name": "TestUser",
     "Email": "email@email.invalid",
-    "PhoneNumber": "0000000000"
+    "PhoneNumber": "0000000000",
+	"IgnoreExpired": "false"
   },
 ```
 ## GatewayRegistration

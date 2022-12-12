@@ -580,10 +580,20 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 			int totalSkipped = 0;
 			EntrustClient client = CreateEntrustClient(ConfigProvider.CAConnectionData);
 			List<Certificate> allCerts = client.GetAllCertificates();
+			bool ignoreExpired = false;
+			if (ConfigProvider.CAConnectionData.ContainsKey(Constants.IGNORE_EXPIRED))
+			{
+				ignoreExpired = Convert.ToBoolean((string)ConfigProvider.CAConnectionData[Constants.IGNORE_EXPIRED]);
+			}
 			foreach (Certificate entrustCert in allCerts)
 			{
 				cancelToken.ThrowIfCancellationRequested();
 
+				if (entrustCert.ExpiresAfter.GetValueOrDefault() <= DateTime.UtcNow)
+				{
+					Logger.Trace($"The certificate with serial number '{entrustCert.SerialNumber}' is expired and IgnoreExpired is true. Skipping.");
+					continue;
+				}
 				if (totalSkipped > maxErrors)
 				{
 					Logger.Error($"The maximum number of errors {maxErrors} has been exceeded. The sync is being cancelled.");
