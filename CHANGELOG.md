@@ -7,3 +7,9 @@
 
 1.0.6
 -Sync fix - certs pending in Entrust now return External Validation status
+
+1.0.7
+-Add configuration option to skip expired certs on sync
+
+1.0.8
+-Fixed logging bug when no SANs were present in request
