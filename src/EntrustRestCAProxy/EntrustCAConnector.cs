@@ -217,14 +217,13 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 			if (san.ContainsKey("Dns"))
 			{
 				dnsNames = new List<string>(san["Dns"]);
+				Logger.Trace($"First DNS SAN: {dnsNames[0]}");
 			}
 
 			if (!commonName.Contains('.'))
 			{
 				throw new Exception($"Domain cannot be determined from Common Name.");
 			}
-
-			Logger.Trace($"First DNS of {dnsNames[0]}");
 
 			IEnumerable<Organization> approvedOrgs = client.GetOrganizations().Where(x => x.VerificationStatus.Equals("APPROVED", StringComparison.OrdinalIgnoreCase));
 			if (string.IsNullOrEmpty(organization)) // If the organization is empty, use the default client.
@@ -302,7 +301,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 					Logger.Trace($"Tracking is {trackingInfo}");
 					Logger.Trace($"QueueForApproval is false");
 					Logger.Trace($"CertEmail is {requestEmail}");
-					Logger.Trace($"SubjectAltName is {dnsNames[0]}");
+					Logger.Trace($"SubjectAltName is {(dnsNames.Count > 0 ? dnsNames[0] : "empty")}");
 					Logger.Trace($"Password is ''");
 					Logger.Trace($"SigningAlg is SHA-2");
 					Logger.Trace($"Eku is {eku}");
@@ -357,7 +356,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 					Logger.Trace($"Org is {organization}");
 					Logger.Trace($"Tracking is {trackingInfo}");
 					Logger.Trace($"CertEmail is {requestEmail}");
-					Logger.Trace($"SubjectAltName is {dnsNames[0]}");
+					Logger.Trace($"SubjectAltName is {(dnsNames.Count > 0 ? dnsNames[0] : "empty")}");
 					Logger.Trace($"Password is ''");
 					Logger.Trace($"SigningAlg is SHA-2");
 					Logger.Trace($"Eku is {eku}");
@@ -397,7 +396,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 					Logger.Trace($"CertLifetime is {"P" + Math.Round(months / 12.0).ToString() + "Y"}");
 					Logger.Trace($"Tracking is {trackingInfo}");
 					Logger.Trace($"CertEmail is {requestEmail}");
-					Logger.Trace($"SubjectAltName is {dnsNames[0]}");
+					Logger.Trace($"SubjectAltName is {(dnsNames.Count > 0 ? dnsNames[0] : "empty")}");
 					Logger.Trace($"Password is ''");
 					Logger.Trace($"SigningAlg is SHA-2");
 					Logger.Trace($"Eku is {eku}");
