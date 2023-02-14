@@ -588,7 +588,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 			{
 				cancelToken.ThrowIfCancellationRequested();
 
-				if (entrustCert.ExpiresAfter.GetValueOrDefault() <= DateTime.UtcNow)
+				if (entrustCert.ExpiresAfter.GetValueOrDefault() <= DateTime.UtcNow && ignoreExpired)
 				{
 					Logger.Trace($"The certificate with serial number '{entrustCert.SerialNumber}' is expired and IgnoreExpired is true. Skipping.");
 					continue;
