@@ -1,5 +1,13 @@
 # Introduction
 This AnyGateway plug-in enables issuance, revocation, and synchronization of certificates from Entrust's Managed SSL/TLS offering.  
+
+# Entrust Authentication
+Entrust API now supports two methods of authentication:  
+1. Basic Auth only  
+2. Basic Auth + Certificate Auth
+
+When creating your API user name and password in the Entrust portal, you will be given the option to select a certificate to go with it. If you do select a certificate, then the gateway will require that certificate information to connect. Otherwise, do not provide ClientCertificate information to the gateway.
+
 # Prerequisites
 
 ## AnyGateway Platform Minimum Version
@@ -147,7 +155,7 @@ This is the username for the gateway to use to authenticate to Entrust
 * ```AuthPassword```
 This is the password for the account the gateway should use to authenticate to Entrust
 * ```ClientCertificate```
-The location and thumbprint of the client authentication certificate to use to connect to Entrust 
+(OPTIONAL) The location and thumbprint of the client authentication certificate to use to connect to Entrust 
 * ```Name```
 The default requester name.
 * ```Email```
