@@ -474,7 +474,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust.Client
 
 		public Certificate GetCertificateBySerialNumber(string serialNumber)
 		{
-			string trimmedSerialNumber = serialNumber.StartsWith("00") ? serialNumber.Substring(2) : serialNumber;
+			string trimmedSerialNumber = serialNumber.TrimStart('0');
 			List<Certificate> result = new List<Certificate>();
 
 			Dictionary<string, string> qParams = new Dictionary<string, string>();
