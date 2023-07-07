@@ -17,3 +17,6 @@
 1.1.0  
 -Added support for basic auth (no client certificate)  
 -Fixed an issue with cert lookups when the serial number has leading 0s
+
+1.2.0  
+-Change revoke to always pass 'unspecified' as the reason code for any reason other than Key Compromised, and to include the reason in the comment instead.
