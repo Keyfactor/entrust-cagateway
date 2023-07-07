@@ -713,7 +713,7 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 			X509Certificate2 authCert = null;
 			if (!connectionInfo.ContainsKey(EntrustConstants.CLIENT_CERTIFICATE))
 			{
-				errors.Add("The client certificate is required.");
+				Logger.Trace("No auth cert information found, assuming basic auth");
 			}
 			else
 			{
@@ -913,12 +913,20 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 
 			string password = connectionInfo.ContainsKey(EntrustConstants.PASSWORD) ? (string)connectionInfo[EntrustConstants.PASSWORD] : string.Empty;
 
-			Dictionary<string, object> clientCertificate = (Dictionary<string, object>)connectionInfo[EntrustConstants.CLIENT_CERTIFICATE];
+			X509Certificate2 authCert = null;
+			if (connectionInfo.ContainsKey(EntrustConstants.CLIENT_CERTIFICATE))
+			{
+				Dictionary<string, object> clientCertificate = (Dictionary<string, object>)connectionInfo[EntrustConstants.CLIENT_CERTIFICATE];
 
-			Logger.Trace("Checking for authentication certificate.");
-			StoreLocation storeLocation = (StoreLocation)Enum.Parse(typeof(StoreLocation), (string)clientCertificate[EntrustConstants.STORE_LOCATION]);
-			GatewayCertificate finder = new GatewayCertificate();
-			X509Certificate2 authCert = finder.FindGatewayCertificate((string)clientCertificate[EntrustConstants.STORE_NAME], storeLocation, (string)clientCertificate[EntrustConstants.THUMBPRINT]);
+				Logger.Trace("Checking for authentication certificate.");
+				StoreLocation storeLocation = (StoreLocation)Enum.Parse(typeof(StoreLocation), (string)clientCertificate[EntrustConstants.STORE_LOCATION]);
+				GatewayCertificate finder = new GatewayCertificate();
+				authCert = finder.FindGatewayCertificate((string)clientCertificate[EntrustConstants.STORE_NAME], storeLocation, (string)clientCertificate[EntrustConstants.THUMBPRINT]);
+			}
+			else
+			{
+				Logger.Trace("No client certificate info found, assuming basic auth");
+			}
 			EntrustClient client = new EntrustClient(username, password, authCert);
 			return client;
 		}
