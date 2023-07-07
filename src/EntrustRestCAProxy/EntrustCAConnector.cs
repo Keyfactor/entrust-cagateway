@@ -534,8 +534,15 @@ namespace Keyfactor.Extensions.AnyGateway.Entrust
 			Dictionary<string, object> connectionInfo = ConfigProvider.CAConnectionData;
 			EntrustClient client = CreateEntrustClient(connectionInfo);
 			string reason = Conversions.RevokeReasonToString(revocationReason);
-			string comment = "Revoked by Entrust Gateway";
+			string comment = $"Revoked by Entrust Gateway for the following reason: {reason}";
 			CAConnectorCertificate cert = GetSingleRecord(caRequestID);
+
+			if (!string.Equals(reason, "keyCompromise"))
+			{
+				// Entrust no longer accepts any reason codes other than keyCompromise and unspecified.
+				reason = "unspecified";
+			}
+
 			if (!(cert.Status == (int)RequestDisposition.ISSUED))
 			{
 				string errorMessage = String.Format("Request {0} was not found in Entrust database or is not in a valid state to perform a revocation", caRequestID);
