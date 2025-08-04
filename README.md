@@ -1,4 +1,8 @@
-# Entrust CA AnyGateway
+# Entrust CA AnyGateway (DEPRECATED)
+
+> [!IMPORTANT]
+> Entrust Certificate Services are being discontinued by Entrust on September 8, 2025. On September 8th, this gateway
+> plugin will be archived and no longer supported.
 
 This integration allows for the Synchronization, Enrollment, and Revocation of certificates from Entrust.
 
@@ -7,20 +11,13 @@ This integration allows for the Synchronization, Enrollment, and Revocation of c
 
 ## About the Keyfactor AnyGateway CA Connector
 
+> [!WARNING]
+> Entrust Certificate Services are being discontinued by Entrust on September 8, 2025. On September 8th, this gateway
+> plugin will be archived and no longer supported.
+
 This repository contains an AnyGateway CA Connector, which is a plugin to the Keyfactor AnyGateway. AnyGateway CA Connectors allow Keyfactor Command to be used for inventory, issuance, and revocation of certificates from a third-party certificate authority.
 
-
-
-
-
 ---
-
-
-
-
-
-
-
 
 ---
 
